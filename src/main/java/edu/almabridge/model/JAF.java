@@ -14,12 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class JAF extends ErrorModel{
 	@Id
-/*	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="job_seq")
-	@SequenceGenerator(
-			name="job_seq",
-			sequenceName="job_sequence",
-			initialValue=1,
-			allocationSize=1)*/
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "jAFId_seq")
+	@SequenceGenerator(name = "jAFId_seq", sequenceName = "JAF_seq",allocationSize = 1)
 	private int jAFId ;
 	private String userId ;
 	private char status ;

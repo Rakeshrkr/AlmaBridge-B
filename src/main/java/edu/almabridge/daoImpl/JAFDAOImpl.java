@@ -61,7 +61,7 @@ public class JAFDAOImpl implements JAFDAO{
 			JAF jAF = new JAF();
 			jAF.setjAFId(jafId);
 			jAF.setStatus('N');
-			sessionFactory.getCurrentSession().delete(jAF);
+			sessionFactory.getCurrentSession().update(jAF);
 			return true ;
 		} catch (HibernateException e) {
 			e.printStackTrace();
@@ -104,6 +104,18 @@ public class JAFDAOImpl implements JAFDAO{
 		query.setString(0, userId);
 		
 		return query.list();
+		
+	}
+
+
+	public boolean ifAlreadySigned(String userId, int jobId) {
+		
+		Session session=getSessionFactory().openSession();
+		Query query =session.createQuery("from JAF where status='Y' and userId =? and jobId = "+jobId);
+		query.setString(0, userId);
+		
+		return !query.list().isEmpty();
+		
 		
 	}
 

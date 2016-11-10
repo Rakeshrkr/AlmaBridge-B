@@ -11,5 +11,6 @@ public interface JAFDAO {
 	public List<JAF> JAFList(String userId);
 	public List<JAF> signedJAFList(String userId);
 	public List<JAF> notSignedJAFList(String userId);
+	public boolean ifAlreadySigned(String userId, int jobId);
 
 }

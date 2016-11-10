@@ -25,21 +25,28 @@ public class UserDetailsController {
 	private UserDetails userDetails;
 
 	//Tested
-	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
-	public boolean addNewUser(@RequestBody UserDetails userDetails) {
+	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
+	public ResponseEntity<UserDetails> addNewUser(@RequestBody UserDetails userDetails) {
+		 userDetails.setStatus('N');
+		 userDetails.setIsOnline('N');
+		 userDetails.setRoleId("Role_User");
+		 
 
 		if (userDetailsDAO.saveUser(userDetails)) {
-			// userDetails.setStatus('Y');
+			
 			userDetails.setErrorCode("200");
 			userDetails.setErrorMsg("Seccessfully registered!");
-			return true;
-		} else {
-			// userDetails.setStatus('N');
-			userDetails.setErrorCode("404");
-			userDetails.setErrorMsg("Not registered!");
-			return false;
-
+			return new ResponseEntity<UserDetails>(userDetails, HttpStatus.OK);
+		} 
+		else {
+			
+			UserDetails userDetails1= new UserDetails();
+			userDetails1.setUserId("notRegisted");
+			userDetails1.setErrorCode("404");
+			userDetails1.setErrorMsg("Not registered!");
+			return new ResponseEntity<UserDetails>(userDetails1, HttpStatus.OK);
 		}
+		
 
 	}
 
@@ -171,6 +178,7 @@ public class UserDetailsController {
 		userDetails = userDetailsDAO.getUser(userId);
 
 		userDetails.setStatus('Y');
+		userDetails.setReason("Welcome to new era");
 		if (userDetailsDAO.updateUser(userDetails) == true) {
 			userDetails.setErrorCode("200");
 			userDetails.setErrorMsg("Successfully updated");
@@ -189,13 +197,14 @@ public class UserDetailsController {
 	@RequestMapping(value = "/reject/{userId}")
 	public ResponseEntity<UserDetails> reject(@PathVariable(value = "userId") String userId) {
 		userDetails = userDetailsDAO.getUser(userId);
-		userDetails.setStatus('N');
+		//userDetails.setStatus('N');
+		userDetails.setReason("You didnt provide correct information");
 		if (userDetailsDAO.updateUser(userDetails) == true) {
 			userDetails.setErrorCode("200");
-			userDetails.setErrorMsg("Successfully updated");
+			userDetails.setErrorMsg("Successfully rejected");
 		} else {
 			userDetails.setErrorCode("404");
-			userDetails.setErrorMsg("Not able to update the status");
+			userDetails.setErrorMsg("Not able to reject the user request");
 		}
 		return new ResponseEntity<UserDetails>(userDetails, HttpStatus.OK);
 	}
