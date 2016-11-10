@@ -10,6 +10,4 @@ public interface BlogDAO {
 	public void updateBlog(Blog blog);
 	public Blog getBlog(int blogId);
 	public List<Blog> blogList();
-	
-
 }

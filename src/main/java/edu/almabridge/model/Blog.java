@@ -1,6 +1,16 @@
 package edu.almabridge.model;
 
-public class Blog {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.stereotype.Component;
+
+@Entity
+@Table
+@Component
+public class Blog extends ErrorModel{
+	@Id
 	private int blogId ;
 	private String title ;
 	private String description ;

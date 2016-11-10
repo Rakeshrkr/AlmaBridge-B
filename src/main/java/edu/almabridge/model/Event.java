@@ -1,10 +1,15 @@
 package edu.almabridge.model;
 
-import java.util.Date;
+
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+
 
 import org.springframework.stereotype.Component;
 
@@ -13,16 +18,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class Event extends ErrorModel{
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "eventId_seq")
+	@SequenceGenerator(name = "eventId_seq", sequenceName = "Event_seq",allocationSize = 1)
 	private int eventId ;
 	private String eventLocation ;
-	private Date eventDate ;
+	
+	private String eventDate ;
 	private String description ;
 	
 	
-	public Date getEventDate() {
+	
+	
+	public String getEventDate() {
 		return eventDate;
 	}
-	public void setEventDate(Date eventDate) {
+	public void setEventDate(String eventDate) {
 		this.eventDate = eventDate;
 	}
 	public int getEventId() {

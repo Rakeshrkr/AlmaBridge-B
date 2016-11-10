@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -69,10 +70,14 @@ public class EventDAOImpl implements EventDAO {
 		return query.list();
 		
 	}
+	
 	@Transactional
 	public boolean deleteEvent(int eventId) {
 		try {
-			sessionFactory.getCurrentSession().delete(getEvent(eventId));
+			Event event = new Event();
+			event.setEventId(eventId);
+			Session session = sessionFactory.getCurrentSession();
+			session.delete(getEvent(eventId));
 			return true ;
 		} catch (HibernateException e) {
 			e.printStackTrace();

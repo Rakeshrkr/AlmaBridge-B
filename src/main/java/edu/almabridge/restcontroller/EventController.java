@@ -22,7 +22,7 @@ public class EventController {
 	
 	@Autowired
 	private EventDAO eventDAO;
-	
+	//Tested
 	@RequestMapping(value = "/eventList", method = RequestMethod.GET)
 	public ResponseEntity<List<Event>> getEvents(){
 		List <Event> eventList = eventDAO.eventList();
@@ -34,10 +34,10 @@ public class EventController {
 		}
 		return new ResponseEntity<List<Event>>(eventList, HttpStatus.OK);
 	}
-	
+	//Tested
 	@RequestMapping("/event/{id}")
 	public ResponseEntity<Event> getEvent(@PathVariable("id") int id){
-		event = eventDAO.getEvent(id);
+		event =  eventDAO.getEvent(id);
 		if(event == null){
 			Event event = new Event();
 			event.setErrorCode("404");
@@ -46,24 +46,25 @@ public class EventController {
 		return new ResponseEntity<Event>(event, HttpStatus.OK);
 	}
 	
+	//Tested
 	@RequestMapping("/createEvent")
 	public ResponseEntity<Event> createEvent(@RequestBody Event newevent){
 		eventDAO.saveEvent(newevent);
 		return new ResponseEntity<Event>(newevent , HttpStatus.OK);
 	}
-	
+	//Tested
 	@RequestMapping("/deleteEvent/{id}")
-	public ResponseEntity<Event> deleteEvent(@PathVariable("id") int id){
+	public boolean deleteEvent(@PathVariable("id") int id){
 		if(eventDAO.getEvent(id) == null){
 			Event event = new Event();
 			event.setErrorCode("404");
 			event.setErrorMsg("No Events posted!");
 		}
 		eventDAO.deleteEvent(id);
-		return new ResponseEntity<Event>(HttpStatus.OK);
+		return true ;
 	}
-	
-	@RequestMapping("/updateEvent/{id}")
+	//Tested
+	@RequestMapping(value="/updateEvent/{id}", method = RequestMethod.POST)
 	public ResponseEntity<Event> updateEvent(@PathVariable("id") int id, @RequestBody Event event){
 		if(eventDAO.getEvent(id) == null){
 			
