@@ -1,0 +1,17 @@
+edu\almabridge\daoImpl\Blog_CommentDAOImpl.class
+edu\almabridge\model\Blog_Comment.class
+edu\almabridge\config\WebAppInitializer.class
+edu\almabridge\model\Blog.class
+edu\almabridge\dao\FriendDAO.class
+edu\almabridge\config\AlmaBridgeConfiguration.class
+edu\almabridge\dao\JAFDAO.class
+edu\almabridge\model\JAF.class
+edu\almabridge\dao\EventDAO.class
+edu\almabridge\dao\BlogDAO.class
+edu\almabridge\dao\Blog_CommentDAO.class
+edu\almabridge\dao\UserDetailsDAO.class
+edu\almabridge\model\Friend.class
+edu\almabridge\model\UserDetails.class
+edu\almabridge\dao\JobDetailsDAO.class
+edu\almabridge\model\JobDetails.class
+edu\almabridge\model\Event.class
