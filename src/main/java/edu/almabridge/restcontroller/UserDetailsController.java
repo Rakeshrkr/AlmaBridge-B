@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.almabridge.dao.UserDetailsDAO;
@@ -24,33 +26,29 @@ public class UserDetailsController {
 	@Autowired
 	private UserDetails userDetails;
 
-	//Tested
+	// Tested
 	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
 	public ResponseEntity<UserDetails> addNewUser(@RequestBody UserDetails userDetails) {
-		 userDetails.setStatus('N');
-		 userDetails.setIsOnline('N');
-		 userDetails.setRoleId("Role_User");
-		 
-
+		userDetails.setStatus('N');
+		userDetails.setIsOnline('N');
+		userDetails.setRoleId("Role_User");
 		if (userDetailsDAO.saveUser(userDetails)) {
-			
+
 			userDetails.setErrorCode("200");
 			userDetails.setErrorMsg("Seccessfully registered!");
 			return new ResponseEntity<UserDetails>(userDetails, HttpStatus.OK);
-		} 
-		else {
-			
-			UserDetails userDetails1= new UserDetails();
+		} else {
+
+			UserDetails userDetails1 = new UserDetails();
 			userDetails1.setUserId("notRegisted");
 			userDetails1.setErrorCode("404");
 			userDetails1.setErrorMsg("Not registered!");
 			return new ResponseEntity<UserDetails>(userDetails1, HttpStatus.OK);
 		}
-		
 
 	}
 
-	//Tested
+	// Tested
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	public boolean updateUser(@RequestBody UserDetails userDetails) {
 
@@ -69,7 +67,7 @@ public class UserDetailsController {
 
 	}
 
-	//Tested
+	// Tested
 	@RequestMapping(value = "/removeUser/{userId}")
 	public boolean removeUser(@PathVariable(value = "userId") String userId) {
 
@@ -88,8 +86,8 @@ public class UserDetailsController {
 
 	}
 
-	//Tested
-	@RequestMapping(value = "/makeAdmin/{userId}", method = RequestMethod.POST)
+	// Tested
+	@RequestMapping(value = "/makeAdmin/{userId}", method = RequestMethod.GET)
 	public boolean makeAdmin(@PathVariable(value = "userId") String userId) {
 		System.out.println("user ID" + userId);
 
@@ -105,7 +103,7 @@ public class UserDetailsController {
 
 	}
 
-	//Tested
+	// Tested
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public ResponseEntity<List<UserDetails>> getUserList() {
 		List<UserDetails> userList = userDetailsDAO.getUserList();
@@ -117,7 +115,7 @@ public class UserDetailsController {
 		return new ResponseEntity<List<UserDetails>>(userList, HttpStatus.OK);
 	}
 
-	//Tested
+	// Tested
 	@RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
 	public ResponseEntity<UserDetails> getUser(@PathVariable(value = "userId") String userId) {
 		userDetails = userDetailsDAO.getUser(userId);
@@ -129,10 +127,10 @@ public class UserDetailsController {
 		return new ResponseEntity<UserDetails>(userDetails, HttpStatus.OK);
 	}
 
-	//Tested
+	// Tested
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<UserDetails> authenticate(@RequestBody UserDetails userDetails, HttpSession httpSession) {
-																											
+
 		userDetails = userDetailsDAO.authenticate(userDetails.getUserId(), userDetails.getPassword());
 		if (userDetails == null) {
 			userDetails = new UserDetails();
@@ -141,16 +139,23 @@ public class UserDetailsController {
 
 		} else {
 			// store userId in HTTPSession
-			userDetails.setErrorCode("200");
-			userDetails.setErrorMsg("You are logged in sussessfully!");
-			httpSession.setAttribute("loggedInUserId", userDetails.getUserId());
-			userDetails.setIsOnline('Y');
-			userDetailsDAO.updateUser(userDetails);
+			if (userDetails.getStatus() == 'Y') {
+				userDetails.setErrorCode("200");
+				userDetails.setErrorMsg("You are logged in sussessfully!");
+				httpSession.setAttribute("loggedInUserId", userDetails.getUserId());
+				userDetails.setIsOnline('Y');
+				userDetailsDAO.updateUser(userDetails);
+			}else{
+				userDetails.setErrorCode("200");
+				userDetails.setErrorMsg("You are not authorized");
+				userDetails.setIsOnline('N');
+				userDetails.setStatus('N');
+			}
 		}
 		return new ResponseEntity<UserDetails>(userDetails, HttpStatus.OK);
 	}
 
-	//Tested
+	// Tested
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public ResponseEntity<UserDetails> logOut(HttpSession httpSession) {
 		String loggedInUser = (String) httpSession.getAttribute("loggedInUserId");
@@ -171,11 +176,13 @@ public class UserDetailsController {
 
 	}
 
-	//Tested
-	@RequestMapping(value = "/approve/{userId}")
-	public ResponseEntity<UserDetails> approve(@PathVariable(value = "userId") String userId) {
-
+	// Tested
+	@RequestMapping(value = "/approve/{userId}/")
+	
+	public ResponseEntity<UserDetails> approve(@PathVariable("userId") String userId) {
+		System.out.println("user Id 1: "+ userId);
 		userDetails = userDetailsDAO.getUser(userId);
+		System.out.println("user Id 2: "+ userDetails.getUserId());
 
 		userDetails.setStatus('Y');
 		userDetails.setReason("Welcome to new era");
@@ -193,16 +200,19 @@ public class UserDetailsController {
 		return new ResponseEntity<UserDetails>(userDetails, HttpStatus.OK);
 	}
 
-	//Tested
-	@RequestMapping(value = "/reject/{userId}")
+	// Tested
+	@RequestMapping(value = "/reject/{userId}/")
 	public ResponseEntity<UserDetails> reject(@PathVariable(value = "userId") String userId) {
 		userDetails = userDetailsDAO.getUser(userId);
-		//userDetails.setStatus('N');
+		userDetails.setStatus('N');
+		userDetails.setIsOnline('N');
+		// userDetails.setStatus('N');
 		userDetails.setReason("You didnt provide correct information");
 		if (userDetailsDAO.updateUser(userDetails) == true) {
 			userDetails.setErrorCode("200");
 			userDetails.setErrorMsg("Successfully rejected");
 		} else {
+			
 			userDetails.setErrorCode("404");
 			userDetails.setErrorMsg("Not able to reject the user request");
 		}

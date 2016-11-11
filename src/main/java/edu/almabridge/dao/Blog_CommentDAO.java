@@ -8,7 +8,5 @@ public interface Blog_CommentDAO {
 	public void deleteComment(int commentId);
 	public void getComment(String userId);
 	public void getComments(int blogId);
-	
-	
 
 }

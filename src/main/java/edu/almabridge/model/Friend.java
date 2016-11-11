@@ -1,7 +1,22 @@
 package edu.almabridge.model;
 
-public class Friend {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import org.springframework.stereotype.Component;
+
+@Entity
+@Table
+@Component
+public class Friend extends ErrorModel{
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "friendId_seq")
+	@SequenceGenerator(name = "friendId_seq", sequenceName = "Friend_seq",allocationSize = 1)
 	private int id ;
 	private String friendId ;
 	private String userId ;
